@@ -4,7 +4,7 @@ from telegram.ext import Application, CommandHandler
 import asyncio
 import os
 
-TOKEN = os.getenv("8544709960:AAH6128cdjtCw0-BI3vHvdFapMgGH5WKaIw")
+TOKEN = os.getenv("BOT_TOKEN")
 CANAL_PRINCIPAL = "https://t.me/+3RSkDPs9bS02NDZk"
 
 app = Flask(__name__)
