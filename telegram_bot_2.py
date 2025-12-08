@@ -9,21 +9,20 @@ app = Flask(__name__)
 TOKEN = os.getenv("BOT_TOKEN")
 CANAL_PRINCIPAL = "https://t.me/+3RSkDPs9bS02NDZk"
 
-# Create the Telegram Application
 application = Application.builder().token(TOKEN).build()
 
-# === COMMAND /start ===
+# --- COMMAND /start ---
 async def start(update: Update, context):
     keyboard = [[InlineKeyboardButton("Canal principal 🔵", url=CANAL_PRINCIPAL)]]
     await update.message.reply_text(
-        "Bienvenue sur le bot !\n\nClique ci-dessous pour rejoindre le canal officiel ⬇️",
+        "Bienvenue sur le bot !\n\nClique ici pour rejoindre le canal 👇",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
 application.add_handler(CommandHandler("start", start))
 
 
-# === WEBHOOK ROUTE ===
+# --- WEBHOOK ROUTE ---
 @app.post("/webhook")
 def webhook():
     data = request.get_json()
@@ -31,7 +30,6 @@ def webhook():
     if data:
         update = Update.de_json(data, application.bot)
 
-        # 👉 IMPORTANT : initialiser avant de traiter l'update
         if not application._initialized:
             asyncio.run(application.initialize())
 
@@ -40,7 +38,12 @@ def webhook():
     return "OK", 200
 
 
-# === HOME ROUTE ===
 @app.get("/")
 def home():
     return "Bot Telegram en ligne ✔️"
+
+
+# --- RUN FLASK SERVER (OBLIGATOIRE SUR RENDER) ---
+if __name__ == "__main__":
+    PORT = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=PORT)
