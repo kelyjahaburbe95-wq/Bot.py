@@ -1,65 +1,39 @@
-###############################################
-# telegram_bot_2.py — Version Render Complète #
-###############################################
-
-import os
-import asyncio
 from flask import Flask, request
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler
+import asyncio
+import os
 
-
-# ============================================
-# 🔐 TOKEN (Render le fournit automatiquement)
-# ============================================
-TOKEN = os.getenv("BOT_TOKEN")   # <-- NE RIEN CHANGER ICI
-
-if not TOKEN:
-    raise RuntimeError("❌ BOT_TOKEN n'est pas défini dans Render.")
-
-
-# ============================================
-# 🚀 FLASK APP
-# ============================================
 app = Flask(__name__)
 
+TOKEN = os.getenv("BOT_TOKEN")  # Render doit contenir BOT_TOKEN dans les variables d'env
+CANAL_PRINCIPAL = "https://t.me/+3RSkDPs9bS02NDZk"
 
-# ============================================
-# 🤖 CONFIGURATION DU BOT TELEGRAM
-# ============================================
+# Application Telegram
 application = Application.builder().token(TOKEN).build()
 
-
-# ============================================
-# 📌 COMMANDE /start
-# ============================================
+# === COMMANDE /start ===
 async def start(update: Update, context):
-    bouton = [[InlineKeyboardButton("Canal principal 🔵",
-                                    url="https://t.me/+3RSkDPs9bS02NDZk")]]
-
+    keyboard = [[InlineKeyboardButton("Canal principal 🔵", url=CANAL_PRINCIPAL)]]
     await update.message.reply_text(
         "Bienvenue sur le bot !\n\nClique ci-dessous pour rejoindre le canal officiel ⬇️",
-        reply_markup=InlineKeyboardMarkup(bouton)
+        reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
 application.add_handler(CommandHandler("start", start))
 
-
-# ============================================
-# 🌐 WEBHOOK (Render envoie ICI les messages)
-# ============================================
+# === FLASK WEBHOOK ROUTE ===
 @app.post("/webhook")
 def webhook():
-    data = request.get_json(force=True)
-    update = Update.de_json(data, application.bot)
-    asyncio.run(application.process_update(update))
+    data = request.get_json()
+
+    if data:
+        update = Update.de_json(data, application.bot)
+        asyncio.run(application.process_update(update))
+
     return "OK", 200
 
-
-# ============================================
-# 🚀 MODE LOCAL (pour tests)
-# ============================================
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    print(f"Bot lancé en local sur le port {port}")
-    app.run(host="0.0.0.0", port=port)
+# === PAGE D'ACCUEIL ===
+@app.get("/")
+def home():
+    return "Bot Telegram en ligne ✔️"
