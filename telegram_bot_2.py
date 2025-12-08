@@ -19,6 +19,33 @@ async def start(update: Update, context):
 
 application.add_handler(CommandHandler("start", start))
 
+from flask import Flask, request
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler
+import asyncio
+import os
+
+TOKEN = os.getenv("BOT_TOKEN")
+CANAL_PRINCIPAL = "https://t.me/+3RSkDPs9bS02NDZk"
+
+app = Flask(__name__)
+application = Application.builder().token(TOKEN).build()
+
+async def start(update: Update, context):
+    keyboard = [[InlineKeyboardButton("Canal principal 🔵", url=CANAL_PRINCIPAL)]]
+    await update.message.reply_text(
+        "Bienvenue sur le bot !\n\nClique ci-dessous pour rejoindre le canal officiel ⬇️",
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+
+application.add_handler(CommandHandler("start", start))
+
+@app.route(f"/{TOKEN}", methods=["POST"])
+def webhook():
+    update = Update.de_json(request.get_json(force=True), application.bot)
+    asyncio.run(application.process_update(update))
+    return "OK", 200
+    
 @app.post("/")
 def webhook():
     data = request.get_json()
