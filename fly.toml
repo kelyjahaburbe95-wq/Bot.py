@@ -6,6 +6,9 @@ app = "telegram-bot"
 [env]
   PORT = "8080"
 
+[processes]
+  app = "python telegram_bot_2.py"
+
 [[services]]
   internal_port = 8080
   processes = ["app"]
