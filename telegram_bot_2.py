@@ -15,7 +15,7 @@ application = Application.builder().token(TOKEN).build()
 async def start(update: Update, context):
     keyboard = [
         [InlineKeyboardButton("Canal principal 🔵", url=CANAL_PRINCIPAL)],
-        [InlineKeyboardButton("Que Du Cul 🔞", url=t.me/QDCqueducul)]
+        [InlineKeyboardButton("Que Du Cul 🔞", url=QDCqueducul)]
     
     await update.message.reply_text(
         "Bienvenue sur le bot !\n\nChoisis un canal ci-dessous ⬇️",
