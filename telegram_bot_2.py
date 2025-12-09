@@ -7,7 +7,7 @@ import os
 TOKEN = os.getenv("BOT_TOKEN")
 
 CANAL_PRINCIPAL = "https://t.me/+3RSkDPs9bS02NDZk"
-Que Du Cul = "https://t.me/+3lW8pf60_hBhNDU0"
+CANAL_CUL = "https://t.me/+3lW8pf60_hBhNDU0"
 
 app = Flask(__name__)
 application = Application.builder().token(TOKEN).build()
@@ -15,7 +15,7 @@ application = Application.builder().token(TOKEN).build()
 async def start(update: Update, context):
     keyboard = [
         [InlineKeyboardButton("Canal principal 🔵", url=CANAL_PRINCIPAL)],
-        [InlineKeyboardButton("Que Du Cul 🔞 ", url=NOUVEAU_CANAL)]
+        [InlineKeyboardButton("Que Du Cul 🔞", url=CANAL_CUL)]
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
