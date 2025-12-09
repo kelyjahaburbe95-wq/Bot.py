@@ -14,6 +14,8 @@ WEBHOOK_URL = "https://bot-py-7v5s.onrender.com/webhook"
 app = Flask(__name__)
 
 application = Application.builder().token(TOKEN).build()
+bot_started = False
+
 
 # ---------------------- HANDLERS ------------------------
 
@@ -32,25 +34,32 @@ async def start(update: Update, context):
 
 application.add_handler(CommandHandler("start", start))
 
-# ---------------------- WEBHOOK INIT ------------------------
 
-@app.before_first_request
-def init_webhook():
-    asyncio.get_event_loop().create_task(start_bot())
+# ---------------------- BOT START FUNCTION ------------------------
 
 async def start_bot():
     await application.initialize()
     await application.start()
-
     await application.bot.set_webhook(WEBHOOK_URL)
+    print("🚀 Webhook installé !")
+
 
 # ---------------------- FLASK ROUTE ------------------------
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
+    global bot_started
+
+    # Démarre le bot une seule fois (pas à chaque requête)
+    if not bot_started:
+        asyncio.get_event_loop().create_task(start_bot())
+        bot_started = True
+
     data = request.get_json(force=True)
     update = Update.de_json(data, application.bot)
+
     asyncio.get_event_loop().create_task(application.process_update(update))
+
     return "OK", 200
 
 
