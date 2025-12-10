@@ -25,13 +25,14 @@ async def start(update: Update, context):
 def main():
     application = Application.builder().token(TOKEN).build()
 
-    application.add_handler(CommandHandler("start", start)
+    application.add_handler(CommandHandler("start", start))
 
-    application.run_webhook(
-        listen="0.0.0.0",
-        
-        PORT = int(os.environ.get("PORT", 8443))
-HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME") 
+application.run_webhook(
+    listen="0.0.0.0",
+    port=int(os.environ.get("PORT", 8443)),
+    url_path=TOKEN,
+    webhook_url=f"https://{os.environ.get('RENDER_EXTERNAL_HOSTNAME')}/{TOKEN}"
+)
 
 if __name__ == "__main__":
     main()
